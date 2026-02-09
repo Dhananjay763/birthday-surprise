@@ -250,6 +250,14 @@
             <p>My Love, scan this QR code with your phone to reveal a special message just for you!</p>
             
             <div class="qr-container">
+                <!-- Girlfriend's small photo in QR section -->
+                <div style="margin-bottom: 15px;">
+                    <img src="https://dhananjay763.github.io/birthday-surprise/gf-photo.jpg" 
+                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #ff4081; box-shadow: 0 5px 15px rgba(255,64,129,0.3);"
+                         alt="My Love"
+                         onerror="this.style.display='none'">
+                </div>
+                
                 <div class="qr-code">
                     <!-- Simulated QR Code -->
                     <div style="text-align: center;">
@@ -291,9 +299,15 @@
         <div class="birthday-section" id="birthdaySection">
             <h1>Happy Birthday, My Love! <span class="heart">❤️</span></h1>
             
-            <!-- You can replace this with your girlfriend's photo -->
+            <!-- Girlfriend's Photo -->
             <div style="text-align: center;">
-                <div class="birthday-image" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4); display: inline-flex; justify-content: center; align-items: center; font-size: 4rem;">
+                <img src="https://dhananjay763.github.io/birthday-surprise/gf-photo.jpg" 
+                     class="birthday-image" 
+                     alt="My Beautiful Girlfriend"
+                     onerror="this.style.display='none'; document.getElementById('defaultImage').style.display='flex';">
+                
+                <!-- Default image if photo fails to load -->
+                <div id="defaultImage" class="birthday-image" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4); display: none; justify-content: center; align-items: center; font-size: 4rem;">
                     👑
                 </div>
             </div>
