@@ -571,7 +571,7 @@
             <div class="instructions">
                 <p style="color: #333; font-size: 1.4rem;"><i class="fas fa-mobile-alt"></i> Open your phone's camera and point it at the QR code above</p>
                 <p style="color: #333; font-size: 1.4rem;"><i class="fas fa-link"></i> Tap the link that appears to open your surprise</p>
-                <p style="margin-top: 15px; color: #ff4081; font-weight: bold; font-size: 1.3rem;">🎁 Special birthday surprise unlocks at 12:00 AM! 🎁</p>
+                <p style="margin-top: 15px; color: #ff4081; font-weight: bold; font-size: 1.3rem;">🎁 Special birthday surprise unlocks at 12:35 AM! 🎁</p>
             </div>
             
             <p style="font-size: 1.5rem; color: #666; font-style: italic;">Created with endless love, just for you my love! 💕</p>
@@ -591,10 +591,10 @@
             </div>
             
             <div class="countdown" id="countdown">
-                ⏳ Revealing in: <span id="timer">00:00:00</span> ⏳
+                ⏳ Revealing at 12:35 AM in: <span id="timer">00:00:00</span> ⏳
             </div>
             
-            <p style="font-size: 1.5rem; color: #555; margin-top: 20px;">Your special birthday message will be revealed at exactly 12:00 AM! 🕛</p>
+            <p style="font-size: 1.5rem; color: #555; margin-top: 20px;">Your special birthday message will be revealed at exactly 12:35 AM! 🕐</p>
         </div>
         
         <!-- Birthday Greeting Section -->
@@ -720,19 +720,24 @@
         // Keep creating floating elements
         setInterval(createFloatingElement, 3000);
         
-        // Function to check if it's exactly 12:00 AM
-        function isMidnight() {
+        // Function to check if it's exactly 12:35 AM
+        function isTargetTime() {
             const now = new Date();
-            return now.getHours() === 0 && now.getMinutes() === 0;
+            return now.getHours() === 0 && now.getMinutes() === 35;
         }
         
-        // Function to calculate time until midnight
-        function getTimeUntilMidnight() {
+        // Function to calculate time until 12:35 AM
+        function getTimeUntilTarget() {
             const now = new Date();
-            const midnight = new Date();
-            midnight.setHours(24, 0, 0, 0);
+            const targetTime = new Date();
+            targetTime.setHours(0, 35, 0, 0); // 12:35 AM
             
-            const diff = midnight - now;
+            // If target time has passed today, set for tomorrow
+            if (targetTime < now) {
+                targetTime.setDate(targetTime.getDate() + 1);
+            }
+            
+            const diff = targetTime - now;
             const hours = Math.floor(diff / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -742,7 +747,7 @@
         
         // Function to update countdown
         function updateCountdown() {
-            const timeUntil = getTimeUntilMidnight();
+            const timeUntil = getTimeUntilTarget();
             const hoursStr = timeUntil.hours.toString().padStart(2, '0');
             const minutesStr = timeUntil.minutes.toString().padStart(2, '0');
             const secondsStr = timeUntil.seconds.toString().padStart(2, '0');
@@ -772,9 +777,6 @@
             for (let i = 0; i < 100; i++) {
                 setTimeout(() => createConfetti(), i * 30);
             }
-            
-            // Play celebration sound (optional)
-            celebrateWithSound();
         }
         
         // Heart explosion effect
@@ -873,35 +875,6 @@
             }, duration * 1000);
         }
         
-        // Celebration sound (optional - user interaction required)
-        function celebrateWithSound() {
-            // Try to play a celebration sound if user has interacted
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                // Create a simple celebration sound
-                for (let i = 0; i < 5; i++) {
-                    setTimeout(() => {
-                        const oscillator = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        oscillator.frequency.setValueAtTime(523.25 + (i * 100), audioContext.currentTime); // C5 note
-                        oscillator.type = 'sine';
-                        
-                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                        
-                        oscillator.start(audioContext.currentTime);
-                        oscillator.stop(audioContext.currentTime + 0.5);
-                    }, i * 200);
-                }
-            } catch (e) {
-                // Silent fail if audio not supported
-            }
-        }
-        
         // Simulate QR code scan
         document.querySelector('.qr-code').addEventListener('click', function() {
             // Show loading section
@@ -912,51 +885,14 @@
             updateCountdown();
             const countdownInterval = setInterval(updateCountdown, 1000);
             
-            // Check if it's midnight every second
-            const checkMidnight = setInterval(() => {
-                if (isMidnight()) {
-                    clearInterval(checkMidnight);
+            // Check if it's 12:35 AM every second
+            const checkTargetTime = setInterval(() => {
+                if (isTargetTime()) {
+                    clearInterval(checkTargetTime);
                     clearInterval(countdownInterval);
                     showBirthdayMessage();
                 }
             }, 1000);
-            
-            // For demo purposes: Show simulation button
-            if (!isMidnight()) {
-                const demoButton = document.createElement('button');
-                demoButton.innerHTML = "🎯 Click to Simulate 12:00 AM (For Demo) 🎯";
-                demoButton.style.background = "linear-gradient(45deg, #ff4081, #ff9a00)";
-                demoButton.style.color = "white";
-                demoButton.style.border = "none";
-                demoButton.style.padding = "18px 30px";
-                demoButton.style.borderRadius = "15px";
-                demoButton.style.fontSize = "1.3rem";
-                demoButton.style.marginTop = "25px";
-                demoButton.style.cursor = "pointer";
-                demoButton.style.boxShadow = "0 10px 25px rgba(255, 64, 129, 0.4)";
-                demoButton.style.fontWeight = "bold";
-                demoButton.style.letterSpacing = "1px";
-                demoButton.style.transition = "all 0.3s ease";
-                
-                demoButton.onmouseover = function() {
-                    this.style.transform = "scale(1.05)";
-                    this.style.boxShadow = "0 15px 35px rgba(255, 64, 129, 0.6)";
-                };
-                
-                demoButton.onmouseout = function() {
-                    this.style.transform = "scale(1)";
-                    this.style.boxShadow = "0 10px 25px rgba(255, 64, 129, 0.4)";
-                };
-                
-                demoButton.addEventListener('click', function() {
-                    clearInterval(checkMidnight);
-                    clearInterval(countdownInterval);
-                    showBirthdayMessage();
-                    this.remove();
-                });
-                
-                loadingSection.appendChild(demoButton);
-            }
         });
         
         // Check if accessed via QR code
@@ -970,9 +906,9 @@
             updateCountdown();
             const countdownInterval = setInterval(updateCountdown, 1000);
             
-            const checkMidnight = setInterval(() => {
-                if (isMidnight()) {
-                    clearInterval(checkMidnight);
+            const checkTargetTime = setInterval(() => {
+                if (isTargetTime()) {
+                    clearInterval(checkTargetTime);
                     clearInterval(countdownInterval);
                     showBirthdayMessage();
                 }
