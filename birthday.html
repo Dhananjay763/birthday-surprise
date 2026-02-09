@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Surprise</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .qr-section, .loading-section, .birthday-section {
+            padding: 40px;
+            text-align: center;
+            display: none;
+        }
+        
+        .active {
+            display: block;
+            animation: fadeIn 1s ease;
+        }
+        
+        h1 {
+            color: #ff4081;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #ff4081;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            color: #555;
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .qr-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+        
+        .qr-code {
+            width: 250px;
+            height: 250px;
+            background-color: #333;
+            border-radius: 10px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .instructions {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 25px auto;
+            max-width: 500px;
+            border-left: 5px solid #ff4081;
+        }
+        
+        .loading {
+            font-size: 3rem;
+            color: #ff4081;
+            margin: 30px 0;
+        }
+        
+        .dots {
+            display: inline-block;
+            animation: bounce 1.5s infinite;
+        }
+        
+        .dots span {
+            display: inline-block;
+            animation: dotBounce 1.5s infinite;
+        }
+        
+        .dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        .surprise-box {
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px auto;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(255, 64, 129, 0.3);
+            border: 3px dashed #ff4081;
+        }
+        
+        .surprise-text {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .countdown {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 400px;
+            font-size: 1.5rem;
+        }
+        
+        .birthday-content {
+            background: linear-gradient(45deg, #ff4081, #ff9a9e);
+            padding: 40px 30px;
+            border-radius: 20px;
+            color: white;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .birthday-content::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: sparkle 4s linear infinite;
+            z-index: 0;
+        }
+        
+        .message {
+            font-size: 1.8rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .heart {
+            color: #ff4081;
+            font-size: 3rem;
+            animation: heartbeat 1.2s infinite;
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
+        .birthday-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            color: #777;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes dotBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes sparkle {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.8rem; }
+            .message { font-size: 1.5rem; }
+            .qr-code { width: 200px; height: 200px; }
+            .container { padding: 15px; }
+            .qr-section, .loading-section, .birthday-section { padding: 25px; }
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- QR Code Section -->
+        <div class="qr-section active" id="qrSection">
+            <h1>Scan for a Surprise!</h1>
+            <p>My Love, scan this QR code with your phone to reveal a special message just for you!</p>
+            
+            <div class="qr-container">
+                <div class="qr-code">
+                    <!-- Simulated QR Code -->
+                    <div style="text-align: center;">
+                        <div style="font-size: 5rem; margin-bottom: 10px;">❤️</div>
+                        <div>Scan Me!</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <p><i class="fas fa-mobile-alt"></i> Open your phone's camera and point it at the QR code above</p>
+                <p><i class="fas fa-link"></i> Tap the link that appears to open your surprise</p>
+            </div>
+            
+            <p>This is a special message created with lots of love, just for you!</p>
+        </div>
+        
+        <!-- Loading Section -->
+        <div class="loading-section" id="loadingSection">
+            <h2>Loading Your Surprise</h2>
+            <div class="loading">
+                <div class="dots">
+                    <span>.</span><span>.</span><span>.</span>
+                </div>
+            </div>
+            
+            <div class="surprise-box">
+                <p class="surprise-text">✨ Get ready for an amazing birthday surprise! ✨</p>
+            </div>
+            
+            <div class="countdown" id="countdown">
+                Waiting for the perfect moment...
+            </div>
+            
+            <p>Your birthday message will be revealed at exactly 12:00 AM!</p>
+        </div>
+        
+        <!-- Birthday Greeting Section -->
+        <div class="birthday-section" id="birthdaySection">
+            <h1>Happy Birthday, My Love! <span class="heart">❤️</span></h1>
+            
+            <!-- You can replace this with your girlfriend's photo -->
+            <div style="text-align: center;">
+                <div class="birthday-image" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4); display: inline-flex; justify-content: center; align-items: center; font-size: 4rem;">
+                    👑
+                </div>
+            </div>
+            
+            <div class="birthday-content">
+                <div class="message">
+                    <p>To the most amazing woman in my life,</p>
+                    <p>On your special day, I want you to know how incredibly grateful I am to have you in my life. You bring so much joy, laughter, and love into my world.</p>
+                    <p>May this birthday be as wonderful as you are, filled with happiness, love, and all your heart desires.</p>
+                    <p>You deserve the world and more. Today and always, I celebrate you!</p>
+                    <p>With all my love, forever and always.</p>
+                </div>
+                
+                <div style="font-size: 2rem; margin: 20px 0;">
+                    <span class="heart">❤️</span>
+                    <span class="heart">🎂</span>
+                    <span class="heart">🎉</span>
+                    <span class="heart">🎁</span>
+                    <span class="heart">❤️</span>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>Made with <span style="color: #ff4081;">❤️</span> for the most special person in my life</p>
+                <p>© Your special day - <span id="currentYear"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to the sections
+        const qrSection = document.getElementById('qrSection');
+        const loadingSection = document.getElementById('loadingSection');
+        const birthdaySection = document.getElementById('birthdaySection');
+        const countdownElement = document.getElementById('countdown');
+        
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Function to check if it's exactly 12:00 AM
+        function isMidnight() {
+            const now = new Date();
+            return now.getHours() === 0 && now.getMinutes() === 0;
+        }
+        
+        // Function to calculate time until midnight
+        function getTimeUntilMidnight() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            
+            const diff = midnight - now;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            return {hours, minutes, seconds};
+        }
+        
+        // Function to update countdown
+        function updateCountdown() {
+            const timeUntil = getTimeUntilMidnight();
+            countdownElement.textContent = 
+                `Revealing in: ${timeUntil.hours}h ${timeUntil.minutes}m ${timeUntil.seconds}s`;
+        }
+        
+        // Function to show birthday message
+        function showBirthdayMessage() {
+            qrSection.classList.remove('active');
+            loadingSection.classList.remove('active');
+            birthdaySection.classList.add('active');
+            
+            // Add celebration effect
+            document.body.style.background = "linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff)";
+            document.body.style.backgroundSize = "400% 400%";
+            
+            // Animate background
+            let pos = 0;
+            setInterval(() => {
+                pos = (pos + 1) % 100;
+                document.body.style.backgroundPosition = `${pos}% ${pos}%`;
+            }, 100);
+            
+            // Create floating hearts
+            for (let i = 0; i < 20; i++) {
+                createFloatingHeart();
+            }
+        }
+        
+        // Function to create floating hearts
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.style.position = 'fixed';
+            heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.opacity = Math.random() * 0.5 + 0.5;
+            heart.style.zIndex = '9999';
+            heart.style.pointerEvents = 'none';
+            document.body.appendChild(heart);
+            
+            // Animate heart floating up
+            const duration = Math.random() * 5 + 5;
+            const animation = heart.animate([
+                { transform: 'translateY(0) rotate(0deg)', opacity: heart.style.opacity },
+                { transform: `translateY(-100vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+            ], {
+                duration: duration * 1000,
+                easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+            });
+            
+            // Remove heart after animation
+            animation.onfinish = () => {
+                document.body.removeChild(heart);
+            };
+        }
+        
+        // Simulate QR code scan (for demo purposes)
+        // In reality, this would trigger when the user accesses via QR code
+        // For now, we'll simulate it with a button click on the QR code
+        document.querySelector('.qr-code').addEventListener('click', function() {
+            // Show loading section
+            qrSection.classList.remove('active');
+            loadingSection.classList.add('active');
+            
+            // Start countdown updates
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            
+            // Check if it's midnight every second
+            const checkMidnight = setInterval(() => {
+                if (isMidnight()) {
+                    clearInterval(checkMidnight);
+                    clearInterval(countdownInterval);
+                    showBirthdayMessage();
+                }
+            }, 1000);
+            
+            // For demo purposes: If it's not midnight, show a button to simulate midnight
+            // Remove this in the actual version
+            if (!isMidnight()) {
+                const demoButton = document.createElement('button');
+                demoButton.textContent = "Click to Simulate 12:00 AM (For Demo)";
+                demoButton.style.background = "#ff4081";
+                demoButton.style.color = "white";
+                demoButton.style.border = "none";
+                demoButton.style.padding = "15px 25px";
+                demoButton.style.borderRadius = "10px";
+                demoButton.style.fontSize = "1.1rem";
+                demoButton.style.marginTop = "20px";
+                demoButton.style.cursor = "pointer";
+                demoButton.style.boxShadow = "0 5px 15px rgba(255, 64, 129, 0.3)";
+                
+                demoButton.addEventListener('click', function() {
+                    clearInterval(checkMidnight);
+                    clearInterval(countdownInterval);
+                    showBirthdayMessage();
+                    this.remove();
+                });
+                
+                loadingSection.appendChild(demoButton);
+            }
+        });
+        
+        // For the actual deployment, you would want to trigger the loading section
+        // when the user accesses the site via QR code. You could use a URL parameter:
+        // e.g., https://yoursite.com/?fromQR=true
+        // Then check for that parameter on page load:
+        
+        // Check if the page was accessed via QR code (using URL parameter)
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromQR = urlParams.get('fromQR');
+        
+        // If accessed via QR code, skip the QR section
+        if (fromQR === 'true') {
+            qrSection.classList.remove('active');
+            loadingSection.classList.add('active');
+            
+            // Start countdown updates
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            
+            // Check if it's midnight every second
+            const checkMidnight = setInterval(() => {
+                if (isMidnight()) {
+                    clearInterval(checkMidnight);
+                    clearInterval(countdownInterval);
+                    showBirthdayMessage();
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
